@@ -1,0 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: lightslategrey;
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 20vh;
+  width: 20vw;
+  margin: auto;
+  gap: 20px;
+}
+.chrono-container {
+  display: flex;
+  gap: 20px;
+}
+
+.hour,
+.minute,
+.second {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+
+  color: azure;
+  padding: 10px;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+}
+.buttons button {
+  padding: 10px 20px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}

@@ -1,54 +1,45 @@
 const startClock = document.getElementById("start")!;
 const stopClock = document.getElementById("stop")!;
-const hourSpan = document.getElementById("hour")!;
 const minuteSpan = document.getElementById("minute")!;
 const secondSpan = document.getElementById("second")!;
+const tenthSpan = document.getElementById("tenth")!;
 
 class Chronometre {
-  private hour: number = 0;
   private minute: number = 0;
   private second: number = 0;
+  private tenthOfSecond: number = 0;
   private intervalId: number | null = null;
 
   constructor(
-    private hourSpan: HTMLElement,
     private minuteSpan: HTMLElement,
-    private secondSpan: HTMLElement
+    private secondSpan: HTMLElement,
+    private tenthSpan: HTMLElement
   ) {}
-  getHour(): number {
-    return this.hour;
-  }
 
-  getMinute(): number {
-    return this.minute;
-  }
-
-  getSecond(): number {
-    return this.second;
-  }
   private updateDisplay(): void {
-    this.hourSpan.textContent = this.hour.toString().padStart(2, "0");
     this.minuteSpan.textContent = this.minute.toString().padStart(2, "0");
     this.secondSpan.textContent = this.second.toString().padStart(2, "0");
+    this.tenthSpan.textContent = this.tenthOfSecond.toString();
   }
+
   setStart(): void {
-    if (this.intervalId !== null) return; // évite de démarrer plusieurs fois
+    if (this.intervalId !== null) return;
 
     this.intervalId = window.setInterval(() => {
-      this.second++;
+      this.tenthOfSecond++;
+
+      if (this.tenthOfSecond === 10) {
+        this.tenthOfSecond = 0;
+        this.second++;
+      }
 
       if (this.second === 60) {
         this.second = 0;
         this.minute++;
       }
 
-      if (this.minute === 60) {
-        this.minute = 0;
-        this.hour++;
-      }
-
       this.updateDisplay();
-    }, 1000);
+    }, 100); // 100ms = 1/10 de seconde
   }
 
   stop(): void {
@@ -59,7 +50,7 @@ class Chronometre {
   }
 }
 
-const chrono = new Chronometre(hourSpan, minuteSpan, secondSpan);
+const chrono = new Chronometre(minuteSpan, secondSpan, tenthSpan);
 
 startClock.addEventListener("click", () => {
   chrono.setStart();

@@ -1,51 +1,63 @@
 "use strict";
-const startClock = document.getElementById("start");
-const stopClock = document.getElementById("stop");
-const minuteSpan = document.getElementById("minute");
-const secondSpan = document.getElementById("second");
-const tenthSpan = document.getElementById("tenth");
-class Chronometre {
-    constructor(minuteSpan, secondSpan, tenthSpan) {
-        this.minuteSpan = minuteSpan;
-        this.secondSpan = secondSpan;
-        this.tenthSpan = tenthSpan;
-        this.minute = 0;
-        this.second = 0;
-        this.tenthOfSecond = 0;
-        this.intervalId = null;
+// method pour creer mon chrono dans le dom
+// method pour gerer le timer
+// method start mon chrono
+// method pour stop le chrono
+const container = document.getElementById("chrono-container");
+const startBtn = document.getElementById("start");
+const stopBtn = document.getElementById("stop");
+class Chrono {
+    constructor() {
+        this.min = 0;
+        this.sec = 0;
+        this.milisec = 0;
+        this.interval = null;
     }
-    updateDisplay() {
-        this.minuteSpan.textContent = this.minute.toString().padStart(2, "0");
-        this.secondSpan.textContent = this.second.toString().padStart(2, "0");
-        this.tenthSpan.textContent = this.tenthOfSecond.toString();
+    init(container) {
+        this.minSpan = document.createElement("span");
+        this.secSpan = document.createElement("span");
+        this.miliSpan = document.createElement("span");
+        this.minSpan.textContent = "00";
+        this.secSpan.textContent = "00";
+        this.miliSpan.textContent = "00";
+        container.append(this.minSpan, this.secSpan, this.miliSpan);
     }
-    setStart() {
-        if (this.intervalId !== null)
+    changeTime() {
+        this.milisec++;
+        if (this.milisec === 10) {
+            this.milisec = 0;
+            this.sec++;
+        }
+        if (this.sec === 60) {
+            this.sec = 0;
+            this.min++;
+        }
+        this.display();
+    }
+    display() {
+        this.minSpan.textContent = this.min.toString().padStart(2, "00");
+        this.secSpan.textContent = this.sec.toString().padStart(2, "00");
+        this.miliSpan.textContent = this.milisec.toString();
+    }
+    start() {
+        if (this.interval !== null)
             return;
-        this.intervalId = window.setInterval(() => {
-            this.tenthOfSecond++;
-            if (this.tenthOfSecond === 10) {
-                this.tenthOfSecond = 0;
-                this.second++;
-            }
-            if (this.second === 60) {
-                this.second = 0;
-                this.minute++;
-            }
-            this.updateDisplay();
-        }, 100); // 100ms = 1/10 de seconde
+        this.interval = window.setInterval(() => {
+            this.changeTime();
+        }, 100);
     }
     stop() {
-        if (this.intervalId !== null) {
-            clearInterval(this.intervalId);
-            this.intervalId = null;
-        }
+        if (this.interval !== null)
+            clearInterval(this.interval);
+        this.interval = null;
     }
 }
-const chrono = new Chronometre(minuteSpan, secondSpan, tenthSpan);
-startClock.addEventListener("click", () => {
-    chrono.setStart();
+// initialisation d un chrono
+const monChrono = new Chrono();
+monChrono.init(container);
+startBtn.addEventListener("click", () => {
+    monChrono.start();
 });
-stopClock.addEventListener("click", () => {
-    chrono.stop();
+stopBtn.addEventListener("click", () => {
+    monChrono.stop();
 });

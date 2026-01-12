@@ -3,9 +3,11 @@
 // method pour gerer le timer
 // method start mon chrono
 // method pour stop le chrono
+// methode pour reset le chrono
 const container = document.getElementById("chrono-container");
 const startBtn = document.getElementById("start");
 const stopBtn = document.getElementById("stop");
+const resetBtn = document.getElementById("reset");
 class Chrono {
     constructor() {
         this.min = 0;
@@ -14,13 +16,26 @@ class Chrono {
         this.interval = null;
     }
     init(container) {
-        this.minSpan = document.createElement("span");
-        this.secSpan = document.createElement("span");
-        this.miliSpan = document.createElement("span");
-        this.minSpan.textContent = "00";
-        this.secSpan.textContent = "00";
-        this.miliSpan.textContent = "00";
-        container.append(this.minSpan, this.secSpan, this.miliSpan);
+        const createCounter = (labelText, value) => {
+            const div = document.createElement("div");
+            div.className = "container-span";
+            const label = document.createElement("label");
+            label.textContent = labelText;
+            const span = document.createElement("span");
+            span.textContent = value.toString();
+            div.appendChild(label);
+            div.appendChild(span);
+            container.appendChild(div);
+            return span;
+        };
+        this.minSpan = createCounter("Min", "00");
+        this.secSpan = createCounter("Sec", "00");
+        this.miliSpan = createCounter("Mili", "0");
+    }
+    display() {
+        this.minSpan.textContent = this.min.toString().padStart(2, "00");
+        this.secSpan.textContent = this.sec.toString().padStart(2, "00");
+        this.miliSpan.textContent = this.milisec.toString();
     }
     changeTime() {
         this.milisec++;
@@ -34,11 +49,6 @@ class Chrono {
         }
         this.display();
     }
-    display() {
-        this.minSpan.textContent = this.min.toString().padStart(2, "00");
-        this.secSpan.textContent = this.sec.toString().padStart(2, "00");
-        this.miliSpan.textContent = this.milisec.toString();
-    }
     start() {
         if (this.interval !== null)
             return;
@@ -51,6 +61,12 @@ class Chrono {
             clearInterval(this.interval);
         this.interval = null;
     }
+    reset() {
+        this.min = 0;
+        this.sec = 0;
+        this.milisec = 0;
+        this.display();
+    }
 }
 // initialisation d un chrono
 const monChrono = new Chrono();
@@ -60,4 +76,8 @@ startBtn.addEventListener("click", () => {
 });
 stopBtn.addEventListener("click", () => {
     monChrono.stop();
+});
+resetBtn.addEventListener("click", () => {
+    monChrono.stop();
+    monChrono.reset();
 });
